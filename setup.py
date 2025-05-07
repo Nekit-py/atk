@@ -5,10 +5,22 @@ setup(
     version="0.1.0",
     packages=find_packages(),
     install_requires=[
-        "pydantic>=2.0.0",
+        "pydantic[email]>=2.0.0",
+        "aiosmtplib>=2.0.0",
         "pandas>=1.3.0",
         "openpyxl>=3.0.0",
     ],
+    extras_require={
+        "development": [
+            "pytest>=7.0.0",
+            "pytest-cov>=4.0.0",
+            "pytest-asyncio>=0.23.0",
+            "black>=22.0.0",
+            "isort>=5.0.0",
+            "mypy>=1.0.0",
+            "flake8>=6.0.0",
+        ],
+    },
     author="Nekit-py",
     author_email="nekit-py@yandex.ru",
     description="Инструменты для автоматизации",

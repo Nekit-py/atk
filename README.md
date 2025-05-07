@@ -5,5 +5,5 @@
 ## Установка
 
 ```bash
-pip install atk
+pip install git+http://10.0.2.191:8888/project/sidorovich_ns/atk.git@develop
 ```
