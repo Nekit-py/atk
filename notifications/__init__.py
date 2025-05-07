@@ -1,5 +1,5 @@
 """Пакет для работы с уведомлениями."""
 
-from .models import Message, Attachment
+from .email.models import EmailMessage, EmailAttachment
 
-__all__ = ["Message", "Attachment"]
+__all__ = ["EmailMessage", "EmailAttachment"]

@@ -1,6 +1,6 @@
 from io import BytesIO
 import pandas as pd
-from typing import List
+from typing import List, Tuple
 
 from .models import SheetContent
 from .formatting import set_column_widths
@@ -18,8 +18,8 @@ def write_single_sheet(sheet_content: SheetContent) -> bytes:
     Выбрасывает:
         ValueError: Если sheet_content некорректен
     """
-    if not isinstance(sheet_content, SheetContent):
-        raise ValueError("sheet_content должен быть экземпляром SheetContent")
+    if not isinstance(sheet_content, tuple) or len(sheet_content) != 2:
+        raise ValueError("sheet_content должен быть кортежем из (sheet_name, data)")
 
     with BytesIO() as buffer:
         with pd.ExcelWriter(buffer) as writer:
@@ -44,9 +44,11 @@ def write_multiple_sheets(contents: List[SheetContent]) -> bytes:
     if not contents:
         raise ValueError("список contents не может быть пустым")
 
-    if not all(isinstance(content, SheetContent) for content in contents):
+    if not all(
+        isinstance(content, tuple) and len(content) == 2 for content in contents
+    ):
         raise ValueError(
-            "Все элементы в contents должны быть экземплярами SheetContent"
+            "Все элементы в contents должны быть кортежами из (sheet_name, data)"
         )
 
     with BytesIO() as buffer:

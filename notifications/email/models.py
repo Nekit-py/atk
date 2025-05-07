@@ -5,7 +5,7 @@ from pydantic import EmailStr, BaseModel, Field
 
 
 @dataclass(slots=True, frozen=True)
-class Attachment:
+class EmailAttachment:
     """Вложение для сообщения.
 
     Атрибуты:
@@ -33,7 +33,7 @@ class Attachment:
         return f"Attachment(name={self.name}, size={self.size()})"
 
 
-class Message(BaseModel):
+class EmailMessage(BaseModel):
     """Сообщение для отправки.
 
     Атрибуты:
@@ -50,7 +50,7 @@ class Message(BaseModel):
     )
     body: str = Field(min_length=1, description="Текст сообщения не может быть пустым")
     cc: Optional[Union[EmailStr, list[EmailStr]]] = None
-    attachment: Optional[Attachment] = None
+    attachment: Optional[EmailAttachment] = None
 
     def format_recipients(self) -> str:
         """Форматирует список получателей для отправки."""
