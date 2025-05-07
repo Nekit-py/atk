@@ -5,10 +5,10 @@ build-backend = "setuptools.build_meta"
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 python_files = ["test_*.py"]
-addopts = "-v --cov=excel_writer"
+addopts = "-v --cov=atk"
 
 [tool.coverage.run]
-source = ["excel_writer"]
+source = ["atk"]
 omit = ["tests/*"]
 
 [tool.coverage.report]

@@ -5,6 +5,7 @@ setup(
     version="0.1.0",
     packages=find_packages(),
     install_requires=[
+        "pydantic>=2.0.0",
         "pandas>=1.3.0",
         "openpyxl>=3.0.0",
     ],
@@ -19,5 +20,5 @@ setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    python_requires=">=3.7",
+    python_requires=">=3.8",
 )
