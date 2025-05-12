@@ -5,7 +5,7 @@
 ## Установка
 
 ```bash
-pip install git+http://10.0.2.191:8888/project/sidorovich_ns/atk.git@develop
+pip install git+https://github.com/Nekit-py/atk.git@develop
 ```
 
 ## Модули
@@ -167,6 +167,52 @@ await sender.send(message)
 
 Методы:
 - `send(message)`: Асинхронный метод для отправки сообщения
+
+### Dates
+
+Модуль для работы с временными периодами.
+
+#### Пример использования
+
+```python
+from dates.models import Period
+from datetime import datetime, timedelta
+
+# Создание периода
+start = datetime(2024, 1, 1, 10, 0)
+end = datetime(2024, 1, 1, 12, 0)
+period = Period(start=start, end=end)
+
+# Проверка пересечения периодов
+other_period = Period(
+    start=datetime(2024, 1, 1, 11, 0),
+    end=datetime(2024, 1, 1, 13, 0)
+)
+intersection = period.intersection(other_period)
+
+# Разбиение периода на подпериоды
+sub_periods = period.split(timedelta(hours=1))
+```
+
+#### Классы
+
+##### Period
+
+Класс для работы с временными периодами.
+
+Атрибуты:
+- `start`: Начало периода (datetime)
+- `end`: Конец периода (datetime)
+
+Методы:
+- `duration()`: Возвращает длительность периода
+- `overlaps(other)`: Проверяет пересечение с другим периодом
+- `intersection(other)`: Возвращает пересечение двух периодов
+- `union(other)`: Возвращает объединение двух периодов
+- `shift(delta)`: Сдвигает период на указанный интервал времени
+- `expand(delta)`: Расширяет период на указанный интервал времени в обе стороны
+- `is_adjacent(other)`: Проверяет, являются ли периоды смежными
+- `split(delta)`: Разбивает период на подпериоды указанной длительности
 
 ## Разработка
 
