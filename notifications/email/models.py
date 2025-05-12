@@ -1,7 +1,10 @@
 from dataclasses import dataclass
-from typing import Optional, Union
+from typing import Optional, Union, TypeAlias
 import re
 from pydantic import EmailStr, BaseModel, Field
+
+
+EmailRecipient: TypeAlias = Union[EmailStr, list[EmailStr]]
 
 
 @dataclass(slots=True, frozen=True)
@@ -44,12 +47,12 @@ class EmailMessage(BaseModel):
         attachment: Вложение
     """
 
-    to: Union[EmailStr, list[EmailStr]]
+    to: EmailRecipient
     subject: str = Field(
         min_length=1, description="Тема сообщения не может быть пустой"
     )
     body: str = Field(min_length=1, description="Текст сообщения не может быть пустым")
-    cc: Optional[Union[EmailStr, list[EmailStr]]] = None
+    cc: Optional[EmailRecipient] = None
     attachment: Optional[EmailAttachment] = None
 
     def format_recipients(self) -> str:
