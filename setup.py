@@ -7,7 +7,7 @@ setup(
     install_requires=[
         "pydantic[email]>=2.0.0",
         "aiosmtplib>=2.0.0",
-        "pandas>=1.3.0",
+        "pandas>=2.0.0",
         "openpyxl>=3.0.0",
     ],
     extras_require={
