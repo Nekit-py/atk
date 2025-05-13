@@ -2,6 +2,9 @@
 
 from setuptools import setup, find_packages
 
+with open("README.md", encoding="utf-8") as f:
+    long_description = f.read()
+
 setup(
     name="atk",
     version="0.1.0",
@@ -26,7 +29,7 @@ setup(
     author="Nekit-py",
     author_email="nekit-py@yandex.ru",
     description="Инструменты для автоматизации",
-    long_description=open("README.md").read(),
+    long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/Nekit-py/atk",
     classifiers=[
