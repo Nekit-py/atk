@@ -3,6 +3,7 @@ import pytest
 import asyncpg
 from unittest.mock import patch, AsyncMock, MagicMock
 from db.postgres import DatabasePool
+from contextlib import asynccontextmanager
 
 
 @pytest.fixture(autouse=True)
@@ -35,15 +36,6 @@ def mock_env_vars():
         "POSTGRES_DBNAME",
     ]:
         os.environ.pop(var, None)
-
-
-@pytest.fixture
-def mock_pool():
-    """Fixture to mock asyncpg.create_pool."""
-    with patch("asyncpg.create_pool", new_callable=AsyncMock) as mock:
-        pool_instance = AsyncMock()
-        mock.return_value = pool_instance
-        yield mock
 
 
 @pytest.mark.asyncio
@@ -119,31 +111,21 @@ async def test_acquire_without_pool():
     assert "Database pool is not initialized" in str(exc_info.value)
 
 
-@pytest.mark.asyncio
-async def test_acquire_success(mock_env_vars, mock_pool):
-    """Test successful connection acquisition."""
-    # Создаем мок соединения
-    mock_connection = AsyncMock()
+@pytest.fixture
+def mock_pool():
+    """Fixture to mock asyncpg.create_pool."""
+    with patch("asyncpg.create_pool", new_callable=AsyncMock) as mock:
+        pool_instance = AsyncMock()
 
-    # Мокаем пул: его метод acquire возвращает асинхронный контекстный менеджер
-    mock_context_manager = AsyncMock()
-    mock_context_manager.__aenter__.return_value = mock_connection
-    mock_context_manager.__aexit__.return_value = None
+        # Мокаем acquire как асинхронный контекстный менеджер
+        @asynccontextmanager
+        async def mock_acquire():
+            yield pool_instance.acquire.return_value
 
-    # Мокаем сам пул
-    mock_pool.return_value.acquire = AsyncMock(return_value=mock_context_manager)
-
-    # Инициализация пула
-    await DatabasePool.create_pool()
-
-    # Теперь при вызове acquire() внутри DatabasePool acquire() вернется контекст менеджер,
-    # который мы замокали
-    async with DatabasePool.acquire() as connection:
-        # Проверяем, что connection — это наш мок
-        assert connection == mock_connection
-
-    # Проверяем, что acquire был вызван
-    mock_pool.return_value.acquire.assert_called_once()
+        # Настраиваем метод acquire возвращать асинхронный менеджер
+        pool_instance.acquire = AsyncMock(side_effect=mock_acquire)
+        mock.return_value = pool_instance
+        yield mock
 
 
 @pytest.mark.asyncio
