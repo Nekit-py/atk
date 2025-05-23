@@ -8,12 +8,15 @@ with open("README.md", encoding="utf-8") as f:
 setup(
     name="atk",
     version="0.2.0",
-    packages=find_packages(),
+    packages=find_packages(include=["atk", "atk.*"]),
+    package_dir={"atk": "atk"},
     install_requires=[
         "pydantic[email]>=2.0.0",
         "aiosmtplib>=2.0.0",
         "pandas>=2.0.0",
         "openpyxl>=3.0.0",
+        "asyncpg>=0.25.0",
+        "python-dotenv>=1.0.0",
     ],
     extras_require={
         "development": [
