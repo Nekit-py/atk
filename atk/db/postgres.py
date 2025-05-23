@@ -62,11 +62,7 @@ class DatabasePool:
 
         # Затем ждём результат выполнения этой корутины
         connection = await acquisition_coroutine
-
-        try:
-            yield connection
-        finally:
-            await connection.release()
+        yield connection
 
     @classmethod
     async def close(cls):
