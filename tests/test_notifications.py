@@ -1,6 +1,6 @@
 import pytest
 from pydantic import EmailStr
-from notifications import EmailMessage, EmailAttachment
+from atk.notifications import EmailMessage, EmailAttachment
 from pydantic_core import ValidationError as PydanticValidationError
 
 

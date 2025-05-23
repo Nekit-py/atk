@@ -3,8 +3,8 @@
 import pytest
 from unittest.mock import AsyncMock, patch
 
-from notifications.email.sender import EmailSender
-from notifications import EmailMessage, EmailAttachment
+from atk.notifications.email.sender import EmailSender
+from atk.notifications import EmailMessage, EmailAttachment
 
 
 @pytest.fixture

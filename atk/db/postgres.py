@@ -1,8 +1,12 @@
+"""Модуль для работы с базой данных PostgreSQL."""
+
+import os
+from typing import Any, AsyncGenerator
 import asyncpg
 from contextlib import asynccontextmanager
 import logging
 
-from common import get_required_env_vars
+from atk.common import get_required_env_vars
 
 logger = logging.getLogger(__name__)
 

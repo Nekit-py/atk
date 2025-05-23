@@ -2,7 +2,7 @@ import os
 import pytest
 import asyncpg
 from unittest.mock import patch, AsyncMock, MagicMock
-from db.postgres import DatabasePool
+from atk.db.postgres import DatabasePool
 from contextlib import asynccontextmanager
 
 

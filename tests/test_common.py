@@ -1,6 +1,6 @@
 import os
 import pytest
-from common import get_required_env_vars
+from atk.common import get_required_env_vars
 
 
 def test_get_required_env_vars_all_present():

@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 import pytest
-from dates.models import Period
+from atk.dates.models import Period
 
 
 @pytest.fixture
