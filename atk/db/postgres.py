@@ -1,8 +1,7 @@
 """Модуль для работы с базой данных PostgreSQL."""
 
-import os
-from typing import Any, AsyncGenerator
 import asyncpg
+import asyncio
 from contextlib import asynccontextmanager
 import logging
 
@@ -70,6 +69,6 @@ class DatabasePool:
         Закрывает пул соединений
         """
         if cls._pool is not None:
-            await cls._pool.close()
+            await asyncio.wait_for(cls._pool.close(), timeout=5)
             cls._pool = None
             logger.info("Database pool closed")
