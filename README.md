@@ -117,9 +117,7 @@ message.attachment = attachment
 sender = EmailSender(
     hostname="smtp.example.com",
     port=587,
-    username="user@example.com",
-    password="password",
-    use_tls=True,
+    start_tls=False,
 )
 await sender.send(message)
 ```

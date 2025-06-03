@@ -13,9 +13,7 @@ def email_sender():
     return EmailSender(
         hostname="test.smtp.com",
         port=587,
-        username="test@example.com",
-        password="password",
-        use_tls=True,
+        start_tls=False,
     )
 
 

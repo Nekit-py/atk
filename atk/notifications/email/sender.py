@@ -26,9 +26,8 @@ class EmailSender:
         self,
         hostname: str = "10.0.100.10",
         port: int = 25,
-        username: Optional[str] = None,
-        password: Optional[str] = None,
-        use_tls: bool = False,
+        start_tls: bool = False,
+        from_email: str = "exhorter@akcept.ru",
     ) -> None:
         """Инициализирует отправителя.
 
@@ -42,10 +41,8 @@ class EmailSender:
         """
         self.hostname = hostname
         self.port = port
-        self.username = username
-        self.password = password
-        self.use_tls = use_tls
-        self.from_email = "exhorter@akcept.ru"
+        self.from_email = from_email
+        self.start_tls = start_tls
 
     async def send(self, message: EmailMessage) -> None:
         """Отправляет email сообщение.
@@ -78,9 +75,7 @@ class EmailSender:
         async with aiosmtplib.SMTP(
             hostname=self.hostname,
             port=self.port,
-            use_tls=self.use_tls,
-            username=self.username,
-            password=self.password,
+            start_tls=self.start_tls,
         ) as server:
             recipients = message.format_recipients().split(", ")
             await server.sendmail(self.from_email, recipients, msg.as_string())
