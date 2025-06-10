@@ -1,7 +1,103 @@
 import os
+import time
+import functools
+import logging
+import asyncio
+from typing import Type, Union, Tuple, Optional, Callable, Any
 from dotenv import load_dotenv
 
 load_dotenv()
+
+logger = logging.getLogger(__name__)
+
+
+def retry(
+    max_attempts: int = 3,
+    delay: float = 1.0,
+    backoff: float = 2.0,
+    exceptions: Union[Type[Exception], Tuple[Type[Exception], ...]] = Exception,
+    on_retry: Optional[Callable[[Exception, int], None]] = None,
+) -> Callable:
+    """
+    Декоратор для повторного выполнения функции при возникновении исключений.
+
+    Args:
+        max_attempts: Максимальное количество попыток выполнения
+        delay: Начальная задержка между попытками в секундах
+        backoff: Множитель для увеличения задержки после каждой попытки
+        exceptions: Исключение или кортеж исключений, при которых нужно повторять попытку
+        on_retry: Функция обратного вызова, которая будет вызвана при каждой повторной попытке.
+                 Принимает исключение и номер текущей попытки.
+
+    Returns:
+        Декоратор для функции
+
+    Example:
+        @retry(max_attempts=3, delay=1.0, backoff=2.0)
+        def my_function():
+            # код функции
+            pass
+
+        @retry(exceptions=(ValueError, TypeError))
+        def another_function():
+            # код функции
+            pass
+    """
+
+    def decorator(func: Callable) -> Callable:
+        @functools.wraps(func)
+        async def async_wrapper(*args: Any, **kwargs: Any) -> Any:
+            current_delay = delay
+            last_exception = None
+
+            for attempt in range(max_attempts):
+                try:
+                    return await func(*args, **kwargs)
+                except exceptions as e:
+                    last_exception = e
+                    if attempt == max_attempts - 1:
+                        raise
+
+                    if on_retry:
+                        on_retry(e, attempt + 1)
+
+                    logger.warning(
+                        f"Attempt {attempt + 1}/{max_attempts} failed: {str(e)}. "
+                        f"Retrying in {current_delay} seconds..."
+                    )
+                    await asyncio.sleep(current_delay)
+                    current_delay *= backoff
+
+            raise last_exception
+
+        @functools.wraps(func)
+        def sync_wrapper(*args: Any, **kwargs: Any) -> Any:
+            current_delay = delay
+            last_exception = None
+
+            for attempt in range(max_attempts):
+                try:
+                    return func(*args, **kwargs)
+                except exceptions as e:
+                    last_exception = e
+                    if attempt == max_attempts - 1:
+                        raise
+
+                    if on_retry:
+                        on_retry(e, attempt + 1)
+
+                    logger.warning(
+                        f"Attempt {attempt + 1}/{max_attempts} failed: {str(e)}. "
+                        f"Retrying in {current_delay} seconds..."
+                    )
+                    time.sleep(current_delay)
+                    current_delay *= backoff
+
+            raise last_exception
+
+        return async_wrapper if asyncio.iscoroutinefunction(func) else sync_wrapper
+
+    return decorator
 
 
 def get_required_env_vars(*var_names: str) -> list[str]:
