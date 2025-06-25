@@ -5,9 +5,9 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.base import MIMEBase
 from email import encoders
 import aiosmtplib
-from typing import Optional
 
 from .models import EmailMessage
+from common import retry
 
 
 class EmailSender:
@@ -44,6 +44,7 @@ class EmailSender:
         self.from_email = from_email
         self.start_tls = start_tls
 
+    @retry(max_attempts=4, delay=20.0, backoff=3.0)
     async def send(self, message: EmailMessage) -> None:
         """Отправляет email сообщение.
 

@@ -7,7 +7,7 @@ with open("README.md", encoding="utf-8") as f:
 
 setup(
     name="atk",
-    version="0.4.0",
+    version="0.5.0",
     packages=find_packages(include=["atk", "atk.*"]),
     package_dir={"atk": "atk"},
     install_requires=[
@@ -17,6 +17,7 @@ setup(
         "openpyxl>=3.0.0",
         "asyncpg>=0.25.0",
         "python-dotenv>=1.0.0",
+        "cx-Oracle-async>=0.3.3",
     ],
     extras_require={
         "development": [
