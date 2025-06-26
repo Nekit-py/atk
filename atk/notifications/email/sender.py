@@ -7,7 +7,7 @@ from email import encoders
 import aiosmtplib
 
 from .models import EmailMessage
-from common import retry
+from atk.common import retry
 
 
 class EmailSender:

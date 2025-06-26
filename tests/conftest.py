@@ -13,10 +13,10 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")
 @pytest.fixture(autouse=True)
 def reset_singleton():
     """Reset singleton instance before each test."""
-    from atk.db.postgres import DatabasePool
+    from atk.db.postgres import PostgresPool
 
-    DatabasePool._instance = None
-    DatabasePool._pool = None
+    PostgresPool._instance = None
+    PostgresPool._pool = None
     yield
 
 

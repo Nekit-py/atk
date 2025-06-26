@@ -1,9 +1,11 @@
 """Модуль для работы с базой данных Oracle."""
 
 import cx_Oracle_async
+from cx_Oracle_async.connections import AsyncConnectionWrapper
 import asyncio
 from contextlib import asynccontextmanager
 import logging
+from typing import Optional, AsyncGenerator
 
 from atk.common import get_required_env_vars
 
@@ -11,8 +13,8 @@ logger = logging.getLogger(__name__)
 
 
 class OraclePool:
-    _instance = None
-    _pool = None
+    _instance: Optional["OraclePool"] = None
+    _pool: Optional[AsyncConnectionWrapper] = None
 
     def __new__(cls):
         if cls._instance is None:
@@ -28,7 +30,7 @@ class OraclePool:
                 )
 
     @classmethod
-    async def create_pool(cls, min_size: int = 5, max_size: int = 20):
+    async def create_pool(cls, min_size: int = 5, max_size: int = 20) -> None:
         """
         Инициализирует пул соединений
         """
@@ -58,7 +60,7 @@ class OraclePool:
 
     @classmethod
     @asynccontextmanager
-    async def acquire(cls):
+    async def acquire(cls) -> AsyncGenerator[AsyncConnectionWrapper, None]:
         """
         Получает соединение из пула
         """
@@ -70,13 +72,14 @@ class OraclePool:
         # Затем ждём результат выполнения этой корутины
         connection = await acquisition_coroutine
         yield connection
+        await cls._pool.release(connection)
 
     @classmethod
-    async def close(cls):
+    async def close(cls) -> None:
         """
         Закрывает пул соединений
         """
         if cls._pool is not None:
-            await asyncio.wait_for(cls._pool.close(), timeout=5)
+            await cls._pool.close()
             cls._pool = None
             logger.info("Oracle Database pool closed")

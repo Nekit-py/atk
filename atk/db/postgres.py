@@ -1,18 +1,18 @@
 """Модуль для работы с базой данных PostgreSQL."""
 
 import asyncpg
-import asyncio
 from contextlib import asynccontextmanager
 import logging
+from typing import Optional, AsyncGenerator
 
 from atk.common import get_required_env_vars
 
 logger = logging.getLogger(__name__)
 
 
-class DatabasePool:
-    _instance = None
-    _pool = None
+class PostgresPool:
+    _instance: Optional["PostgresPool"] = None
+    _pool: Optional[asyncpg.Pool] = None
 
     def __new__(cls):
         if cls._instance is None:
@@ -20,7 +20,7 @@ class DatabasePool:
         return cls._instance
 
     @classmethod
-    async def create_pool(cls, min_size: int = 5, max_size: int = 20):
+    async def create_pool(cls, min_size: int = 5, max_size: int = 20) -> None:
         """
         Инициализирует пул соединений
         """
@@ -50,7 +50,7 @@ class DatabasePool:
 
     @classmethod
     @asynccontextmanager
-    async def acquire(cls):
+    async def acquire(cls) -> AsyncGenerator[asyncpg.Connection, None]:
         """
         Получает соединение из пула
         """
@@ -62,13 +62,15 @@ class DatabasePool:
         # Затем ждём результат выполнения этой корутины
         connection = await acquisition_coroutine
         yield connection
+        # Обязательно возвращаем коннект в пул!
+        await cls._pool.release(connection)
 
     @classmethod
-    async def close(cls):
+    async def close(cls) -> None:
         """
         Закрывает пул соединений
         """
         if cls._pool is not None:
-            await asyncio.wait_for(cls._pool.close(), timeout=5)
+            await cls._pool.close()
+            logger.info("Database pool closed successfully")
             cls._pool = None
-            logger.info("Database pool closed")

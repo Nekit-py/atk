@@ -2,15 +2,15 @@ import os
 import pytest
 import asyncpg
 from unittest.mock import patch, AsyncMock, MagicMock
-from atk.db.postgres import DatabasePool
+from atk.db.postgres import PostgresPool
 from contextlib import asynccontextmanager
 
 
 @pytest.fixture(autouse=True)
 def reset_singleton():
     """Reset singleton instance before each test."""
-    DatabasePool._instance = None
-    DatabasePool._pool = None
+    PostgresPool._instance = None
+    PostgresPool._pool = None
     yield
 
 
@@ -42,7 +42,7 @@ def mock_env_vars():
 async def test_create_pool_success(mock_env_vars, mock_pool):
     """Test successful pool creation."""
     # Execute
-    await DatabasePool.create_pool()
+    await PostgresPool.create_pool()
 
     # Assert
     mock_pool.assert_called_once_with(
@@ -61,7 +61,7 @@ async def test_create_pool_success(mock_env_vars, mock_pool):
 async def test_create_pool_custom_size(mock_env_vars, mock_pool):
     """Test pool creation with custom size parameters."""
     # Execute
-    await DatabasePool.create_pool(min_size=10, max_size=30)
+    await PostgresPool.create_pool(min_size=10, max_size=30)
 
     # Assert
     mock_pool.assert_called_once_with(
@@ -81,7 +81,7 @@ async def test_create_pool_missing_env_vars(mock_pool):
     """Test pool creation with missing environment variables."""
     # Execute and Assert
     with pytest.raises(ValueError) as exc_info:
-        await DatabasePool.create_pool()
+        await PostgresPool.create_pool()
 
     assert "Не установлены обязательные переменные окружения" in str(exc_info.value)
     mock_pool.assert_not_called()
@@ -95,7 +95,7 @@ async def test_create_pool_error(mock_env_vars, mock_pool):
 
     # Execute and Assert
     with pytest.raises(asyncpg.PostgresError) as exc_info:
-        await DatabasePool.create_pool()
+        await PostgresPool.create_pool()
 
     assert "Connection failed" in str(exc_info.value)
 
@@ -105,7 +105,7 @@ async def test_acquire_without_pool():
     """Test acquire without initialized pool."""
     # Execute and Assert
     with pytest.raises(RuntimeError) as exc_info:
-        async with DatabasePool.acquire():
+        async with PostgresPool.acquire():
             pass
 
     assert "Database pool is not initialized" in str(exc_info.value)
@@ -136,8 +136,8 @@ async def test_close_pool(mock_env_vars, mock_pool):
     mock_pool.return_value = pool_instance
 
     # Execute
-    await DatabasePool.create_pool()
-    await DatabasePool.close()
+    await PostgresPool.create_pool()
+    await PostgresPool.close()
 
     # Assert
     pool_instance.close.assert_called_once()
@@ -145,10 +145,10 @@ async def test_close_pool(mock_env_vars, mock_pool):
 
 @pytest.mark.asyncio
 async def test_singleton_pattern():
-    """Test that DatabasePool is a singleton."""
+    """Test that PostgresPool is a singleton."""
     # Execute
-    instance1 = DatabasePool()
-    instance2 = DatabasePool()
+    instance1 = PostgresPool()
+    instance2 = PostgresPool()
 
     # Assert
     assert instance1 is instance2
