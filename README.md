@@ -5,7 +5,7 @@
 ## Установка
 
 ```bash
-pip install git+https://github.com/Nekit-py/atk.git@develop
+pip install git+http://10.0.2.191:8888/project/sidorovich_ns/atk.git@develop
 ```
 
 Требуется Python 3.8+
