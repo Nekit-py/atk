@@ -1,0 +1,2 @@
+# Включить config.yaml (include_package_data=True в setup.py)
+include atk/logger/config.yml
