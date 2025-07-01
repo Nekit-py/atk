@@ -7,7 +7,7 @@ with open("README.md", encoding="utf-8") as f:
 
 setup(
     name="atk",
-    version="0.6.0",
+    version="0.7.0",
     packages=find_packages(include=["atk", "atk.*"]),
     package_dir={"atk": "atk"},
     install_requires=[
@@ -18,6 +18,7 @@ setup(
         "asyncpg>=0.25.0",
         "python-dotenv>=1.0.0",
         "cx-Oracle-async>=0.3.3",
+        "PyYAML>=6.0.2,<7.0.0",
     ],
     extras_require={
         "development": [

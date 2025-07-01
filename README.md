@@ -1,6 +1,6 @@
 # ATK (Automation Toolkit)
 
-Инструменты для автоматизации работы с данными и отправки уведомлений.
+Инструменты для автоматизации работы с данными, отправки уведомлений, работы с базами данных и датами.
 
 ## Установка
 
@@ -8,97 +8,64 @@
 pip install git+https://github.com/Nekit-py/atk.git@develop
 ```
 
-## Модули
+Требуется Python 3.8+
 
-### Excel
+---
+
+## Логгирование
+
+В начале вашего приложения инициализируйте логгирование:
+
+```python
+import atk.logger.logger  # инициализация логгирования
+```
+
+В любом модуле используйте стандартный логгер:
+
+```python
+import logging
+logger = logging.getLogger(__name__)
+logger.info("Пример логирования")
+```
+
+---
+
+## Работа с Excel
 
 Модуль для работы с Excel файлами.
 
-#### Пример использования
+### Пример использования
 
 ```python
-from excel import write_single_sheet, write_multiple_sheets, SheetContent
+from atk.excel import write_single_sheet, write_multiple_sheets, SheetContent
 import pandas as pd
 
-# Создание данных
-data = pd.DataFrame({
-    "Name": ["John", "Jane"],
-    "Age": [30, 25]
-})
-
-# Создание содержимого листа
+data = pd.DataFrame({"Name": ["John", "Jane"], "Age": [30, 25]})
 sheet = SheetContent("Users", data)
 
-# Запись одного листа
 excel_bytes = write_single_sheet(sheet)
 
-# Запись нескольких листов
 sheets = [
     SheetContent("Users", data),
     SheetContent("Stats", pd.DataFrame({"Total": [2]}))
 ]
 excel_bytes = write_multiple_sheets(sheets)
 
-# Сохранение в файл
 with open("output.xlsx", "wb") as f:
     f.write(excel_bytes)
 ```
 
-#### Функции
+---
 
-##### write_single_sheet
-
-Функция для записи одного листа в Excel.
-
-Аргументы:
-- `sheet_content`: Объект SheetContent, содержащий название листа и данные
-
-Возвращает:
-- `bytes`: Содержимое Excel файла в виде байтов
-
-Выбрасывает:
-- `ValueError`: Если sheet_content некорректен
-
-##### write_multiple_sheets
-
-Функция для записи нескольких листов в Excel.
-
-Аргументы:
-- `contents`: Список объектов SheetContent
-
-Возвращает:
-- `bytes`: Содержимое Excel файла в виде байтов
-
-Выбрасывает:
-- `ValueError`: Если список contents пуст или содержит некорректные элементы
-
-#### Классы
-
-##### SheetContent
-
-Класс для хранения данных листа.
-
-Атрибуты:
-- `sheet_name`: Имя листа
-- `data`: Данные для записи (pandas DataFrame)
-
-##### ExcelFormatting
-
-Класс для форматирования Excel файлов.
-
-Методы:
-- `apply_formatting(worksheet)`: Применяет форматирование к листу
-
-### Notifications
+## Email-уведомления
 
 Модуль для работы с email-уведомлениями.
 
-#### Пример использования
+### Пример использования
 
 ```python
-from notifications import EmailMessage, EmailAttachment, EmailSender
+from atk.notifications import EmailMessage, EmailAttachment, EmailSender
 
-# Создание сообщения
 message = EmailMessage(
     to=["recipient@example.com"],
     subject="Test Subject",
@@ -106,14 +73,12 @@ message = EmailMessage(
     cc=["cc@example.com"],
 )
 
-# Добавление вложения
 attachment = EmailAttachment(
     name="report.xlsx",
     data=b"file content",
 )
 message.attachment = attachment
 
-# Отправка сообщения
 sender = EmailSender(
     hostname="smtp.example.com",
     port=587,
@@ -122,95 +87,70 @@ sender = EmailSender(
 await sender.send(message)
 ```
 
-#### Классы
+---
 
-##### EmailMessage
-
-Класс для создания email-сообщений.
-
-Атрибуты:
-- `to`: Адрес получателя или список получателей
-- `subject`: Тема сообщения
-- `body`: Текст сообщения
-- `cc`: Адреса получателей копии (опционально)
-- `attachment`: Вложение (опционально)
-
-Методы:
-- `format_recipients()`: Форматирует список получателей для отправки
-- `has_attachments()`: Проверяет наличие вложений
-- `get_attachment_size()`: Возвращает размер вложения в байтах
-
-##### EmailAttachment
-
-Класс для работы с вложениями.
-
-Атрибуты:
-- `data`: Байтовые данные вложения
-- `name`: Имя файла вложения
-
-Методы:
-- `size()`: Возвращает размер вложения в байтах
-
-##### EmailSender
-
-Класс для отправки email-сообщений.
-
-Атрибуты:
-- `hostname`: SMTP сервер
-- `port`: Порт SMTP сервера
-- `username`: Имя пользователя для аутентификации
-- `password`: Пароль для аутентификации
-- `use_tls`: Использовать ли TLS
-- `from_email`: Email адрес отправителя
-
-Методы:
-- `send(message)`: Асинхронный метод для отправки сообщения
-
-### Dates
+## Работа с датами
 
 Модуль для работы с временными периодами.
 
-#### Пример использования
+### Пример использования
 
 ```python
-from dates.models import Period
+from atk.dates import Period
 from datetime import datetime, timedelta
 
-# Создание периода
 start = datetime(2024, 1, 1, 10, 0)
 end = datetime(2024, 1, 1, 12, 0)
 period = Period(start=start, end=end)
 
-# Проверка пересечения периодов
 other_period = Period(
     start=datetime(2024, 1, 1, 11, 0),
     end=datetime(2024, 1, 1, 13, 0)
 )
 intersection = period.intersection(other_period)
 
-# Разбиение периода на подпериоды
 sub_periods = period.split(timedelta(hours=1))
 ```
 
-#### Классы
+---
 
-##### Period
+## Работа с базами данных
 
-Класс для работы с временными периодами.
+### Oracle
 
-Атрибуты:
-- `start`: Начало периода (datetime)
-- `end`: Конец периода (datetime)
+```python
+from atk.db.oracle import OraclePool
+import asyncio
 
-Методы:
-- `duration()`: Возвращает длительность периода
-- `overlaps(other)`: Проверяет пересечение с другим периодом
-- `intersection(other)`: Возвращает пересечение двух периодов
-- `union(other)`: Возвращает объединение двух периодов
-- `shift(delta)`: Сдвигает период на указанный интервал времени
-- `expand(delta)`: Расширяет период на указанный интервал времени в обе стороны
-- `is_adjacent(other)`: Проверяет, являются ли периоды смежными
-- `split(delta)`: Разбивает период на подпериоды указанной длительности
+async def main():
+    await OraclePool.create_pool()
+    async with OraclePool.acquire() as connection:
+        async with connection.cursor() as cursor:
+            await cursor.execute("SELECT 1 FROM DUAL")
+            result = await cursor.fetchone()
+            print(result)
+    await OraclePool.close()
+
+asyncio.run(main())
+```
+
+### PostgreSQL
+
+```python
+from atk.db.postgres import PostgresPool
+import asyncio
+
+async def main():
+    await PostgresPool.create_pool()
+    async with PostgresPool.acquire() as connection:
+        result = await connection.fetchrow("SELECT 1 as result")
+        print(result)
+    await PostgresPool.close()
+
+asyncio.run(main())
+```
+
+---
 
 ## Разработка
 

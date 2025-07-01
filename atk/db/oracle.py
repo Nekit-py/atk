@@ -2,7 +2,6 @@
 
 import cx_Oracle_async
 from cx_Oracle_async.connections import AsyncConnectionWrapper
-import asyncio
 from contextlib import asynccontextmanager
 import logging
 from typing import Optional, AsyncGenerator
