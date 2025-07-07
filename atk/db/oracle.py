@@ -22,7 +22,7 @@ class OraclePool:
 
     @classmethod
     async def _declare(cls):
-        async with cls.pool.acquire() as connection:
+        async with cls._pool.acquire() as connection:
             async with connection.cursor() as cursor:
                 await cursor.execute(
                     "declare lock_id integer; begin lock_id := ibs.executor.lock_open; end;"
