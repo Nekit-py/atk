@@ -61,9 +61,11 @@ class PostgresPool:
 
         # Затем ждём результат выполнения этой корутины
         connection = await acquisition_coroutine
-        yield connection
-        # Обязательно возвращаем коннект в пул!
-        await cls._pool.release(connection)
+        try:
+            yield connection
+            # Обязательно возвращаем коннект в пул!
+        finally:
+            await cls._pool.release(connection)
 
     @classmethod
     async def close(cls) -> None:

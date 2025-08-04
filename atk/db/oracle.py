@@ -70,8 +70,10 @@ class OraclePool:
 
         # Затем ждём результат выполнения этой корутины
         connection = await acquisition_coroutine
-        yield connection
-        await cls._pool.release(connection)
+        try:
+            yield connection
+        finally:
+            await cls._pool.release(connection)
 
     @classmethod
     async def close(cls) -> None:
