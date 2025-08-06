@@ -37,11 +37,11 @@ class PostgresPool:
     @classmethod
     async def create_pool(
         cls,
-        user: str,
-        password: str,
-        host: str,
-        port: int,
-        dbname: str,
+        user: str = "POSTGRES_USER",
+        password: str = "POSTGRES_PASSWORD",
+        host: str = "POSTGRES_HOST",
+        port: int = "POSTGRES_PORT",
+        dbname: str = "POSTGRES_DBNAME",
         *,
         pool_name: str = "default",
         min_size: int = 5,
@@ -53,12 +53,11 @@ class PostgresPool:
         Если пул с таким именем уже существует, метод завершается без ошибки.
 
         Args:
-            (Названия переменных окружения)
             user: Имя пользователя для подключения к базе данных
-            password: (Название переменной окружения)
-            host: (Название переменной окружения)
-            port: (Название переменной окружения)
-            dbname: (Название переменной окружения)
+            password: Пароль для подключения к базе данных
+            host: Хост сервера PostgreSQL
+            port: Порт сервера PostgreSQL
+            dbname: Имя базы данных
             pool_name: Имя пула для идентификации (по умолчанию "default")
             min_size: Минимальное количество соединений в пуле (по умолчанию 5)
             max_size: Максимальное количество соединений в пуле (по умолчанию 20)

@@ -51,11 +51,11 @@ class OraclePool:
     @classmethod
     async def create_pool(
         cls,
-        user: str,
-        password: str,
-        host: str,
-        port: int,
-        service_name: str,
+        user: str = "ORACLE_USER",
+        password: str = "ORACLE_PASSWORD",
+        host: str = "ORACLE_HOST",
+        port: int = "ORACLE_PORT",
+        service_name: str = "ORACLE_SERVICE_NAME",
         *,
         pool_name: str = "default",
         min_size: int = 5,
