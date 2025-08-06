@@ -125,24 +125,20 @@ from atk.db.postgres import PostgresPool
 import asyncio
 
 async def main():
-    # Создание пула по умолчанию
-    await PostgresPool.create_pool()
+    # Создание пула по умолчанию с параметрами подключения (берутся из файла .env)
+    await PostgresPool.create_pool(
+        user="POSTGRES_USER",
+        password="POSTGRES_PASSWORD", 
+        host="POSTGRES_HOST",
+        port="POSTGRES_PORT",
+        dbname="POSTGRES_DBNAME"
+    )
     
     # Работа с основным пулом
     async with PostgresPool.acquire() as connection:
         result = await connection.fetchrow("SELECT 1 as result")
         print(result)
     
-    # Создание дополнительного пула для аналитики
-    await PostgresPool.create_pool("analytics", min_size=3, max_size=10)
-    
-    # Работа с пулом аналитики
-    async with PostgresPool.acquire("analytics") as connection:
-        result = await connection.fetchrow("SELECT COUNT(*) FROM reports")
-        print(result)
-    
-    # Закрытие конкретного пула
-    await PostgresPool.close("analytics")
     
     # Закрытие всех пулов
     await PostgresPool.close_all()
@@ -157,8 +153,14 @@ from atk.db.oracle import OraclePool
 import asyncio
 
 async def main():
-    # Создание пула по умолчанию
-    await OraclePool.create_pool()
+    # Создание пула по умолчанию с параметрами подключения (берутся из файла .env)
+    await OraclePool.create_pool(
+        user="ORACLE_USER",
+        password="ORACLE_PASSWORD",
+        host="ORACLE_HOST", 
+        port="ORACLE_PORT",
+        service_name="ORACLE_SERVICE_NAME"
+    )
     
     # Работа с основным пулом
     async with OraclePool.acquire() as connection:
@@ -168,7 +170,16 @@ async def main():
             print(result)
     
     # Создание дополнительного пула для отчетов
-    await OraclePool.create_pool("reports", min_size=2, max_size=8)
+    await OraclePool.create_pool(
+        user="ORACLE_USER",
+        password="ORACLE_PASSWORD",
+        host="ORACLE_HOST",
+        port="ORACLE_PORT",
+        service_name="ORACLE_SERVICE_NAME",
+        pool_name="reports",
+        min_size=2,
+        max_size=8
+    )
     
     # Работа с пулом отчетов
     async with OraclePool.acquire("reports") as connection:
@@ -184,6 +195,31 @@ async def main():
     await OraclePool.close_all()
 
 asyncio.run(main())
+```
+
+### Использование переменных окружения
+
+Вместо явного указания параметров подключения можно использовать переменные окружения:
+
+```python
+# Для PostgreSQL
+import os
+os.environ.update({
+    "POSTGRES_USER": "myuser",
+    "POSTGRES_PASSWORD": "mypassword",
+    "POSTGRES_HOST": "localhost",
+    "POSTGRES_PORT": "5432",
+    "POSTGRES_DBNAME": "mydb"
+})
+
+# Для Oracle
+os.environ.update({
+    "ORACLE_USER": "myuser",
+    "ORACLE_PASSWORD": "mypassword", 
+    "ORACLE_HOST": "localhost",
+    "ORACLE_PORT": "1521",
+    "ORACLE_SERVICE_NAME": "ORCL"
+})
 ```
 
 ### Переменные окружения

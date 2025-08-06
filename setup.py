@@ -7,7 +7,7 @@ with open("README.md", encoding="utf-8") as f:
 
 setup(
     name="atk",
-    version="0.8.0",
+    version="0.8.1",
     packages=find_packages(include=["atk", "atk.*"]),
     package_dir={"atk": "atk"},
     include_package_data=True,
