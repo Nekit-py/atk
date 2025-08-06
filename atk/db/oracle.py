@@ -13,7 +13,8 @@ logger = logging.getLogger(__name__)
 
 class OraclePool:
     _instance: Optional["OraclePool"] = None
-    _pool: Optional[AsyncConnectionWrapper] = None
+    # _pool: Optional[AsyncConnectionWrapper] = None
+    _pools: dict[str, AsyncConnectionWrapper] = {}
 
     def __new__(cls):
         if cls._instance is None:
@@ -29,7 +30,9 @@ class OraclePool:
                 )
 
     @classmethod
-    async def create_pool(cls, min_size: int = 5, max_size: int = 20) -> None:
+    async def create_pool(
+        cls, name: str = "default", min_size: int = 5, max_size: int = 20
+    ) -> None:
         """
         Инициализирует пул соединений
         """
@@ -42,7 +45,7 @@ class OraclePool:
                     "ORACLE_PORT",
                     "ORACLE_SERVICE_NAME",
                 )
-                cls._pool = await cx_Oracle_async.create_pool(
+                cls._pools[name] = await cx_Oracle_async.create_pool(
                     host=host,
                     port=port,
                     user=user,
@@ -59,28 +62,37 @@ class OraclePool:
 
     @classmethod
     @asynccontextmanager
-    async def acquire(cls) -> AsyncGenerator[AsyncConnectionWrapper, None]:
+    async def acquire(
+        cls, name: str = "default"
+    ) -> AsyncGenerator[AsyncConnectionWrapper, None]:
         """
         Получает соединение из пула
         """
-        if cls._pool is None:
+        if name not in cls._pools:
             raise RuntimeError("Oracle Database pool is not initialized")
         # Сначала получаем корутину от базового пула
-        acquisition_coroutine = cls._pool.acquire()
+        acquisition_coroutine = cls._pools[name].acquire()
 
         # Затем ждём результат выполнения этой корутины
         connection = await acquisition_coroutine
         try:
             yield connection
         finally:
-            await cls._pool.release(connection)
+            await cls._pools[name].release(connection)
 
     @classmethod
-    async def close(cls) -> None:
+    async def close_all(cls) -> None:
+        """
+        Закрывает все пулы соединений
+        """
+        for pool in cls._pools.values():
+            await pool.close()
+            logger.info("Все Oracle пулы соединений закрыты")
+
+    @classmethod
+    async def close(cls, name: str = "default") -> None:
         """
         Закрывает пул соединений
         """
-        if cls._pool is not None:
-            await cls._pool.close()
-            cls._pool = None
-            logger.info("Oracle Database pool closed")
+        await cls._pools[name].close()
+        logger.info("%s Oracle Database pool closed", name)
