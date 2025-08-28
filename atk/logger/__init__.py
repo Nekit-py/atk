@@ -1,5 +1,5 @@
 """Модуль для настройки логгирования."""
 
-from .logger import *
+from . import logger
 
-__all__ = []
+__all__ = ["logger"]

@@ -1,9 +1,11 @@
 import os
-import pytest
-import asyncpg
-from unittest.mock import patch, AsyncMock, MagicMock
-from atk.db.postgres import PostgresPool
 from contextlib import asynccontextmanager
+from unittest.mock import AsyncMock, patch
+
+import asyncpg
+import pytest
+
+from atk.db.postgres import PostgresPool
 
 
 @pytest.fixture(autouse=True)

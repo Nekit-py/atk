@@ -1,9 +1,10 @@
-import os
-import time
+import asyncio
 import functools
 import logging
-import asyncio
-from typing import Type, Union, Tuple, Optional, Callable, Any
+import os
+import time
+from typing import Any, Callable, Optional
+
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -15,7 +16,7 @@ def retry(
     max_attempts: int = 3,
     delay: float = 1.0,
     backoff: float = 2.0,
-    exceptions: Union[Type[Exception], Tuple[Type[Exception], ...]] = Exception,
+    exceptions: type[Exception] | tuple[type[Exception], ...] = Exception,
     on_retry: Optional[Callable[[Exception, int], None]] = None,
 ) -> Callable:
     """

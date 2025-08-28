@@ -1,6 +1,7 @@
 import pandas as pd
 import pytest
-from atk.excel import SheetContent, write_single_sheet, write_multiple_sheets
+
+from atk.excel import SheetContent, write_multiple_sheets, write_single_sheet
 
 
 def test_write_single_sheet():

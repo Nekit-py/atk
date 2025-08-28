@@ -1,5 +1,7 @@
 from datetime import datetime, timedelta
+
 import pytest
+
 from atk.dates.models import Period
 
 

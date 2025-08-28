@@ -1,10 +1,12 @@
 """Модуль для работы с базой данных Oracle."""
 
+import logging
+from collections.abc import AsyncGenerator
+from contextlib import asynccontextmanager
+from typing import Optional
+
 import cx_Oracle_async
 from cx_Oracle_async.connections import AsyncConnectionWrapper
-from contextlib import asynccontextmanager
-import logging
-from typing import Optional, AsyncGenerator
 
 from atk.common import get_required_env_vars
 
@@ -48,6 +50,7 @@ class OraclePool:
                     "declare lock_id integer; begin lock_id := ibs.executor.lock_open; end;"
                 )
 
+    # ruff: noqa: S107
     @classmethod
     async def create_pool(
         cls,

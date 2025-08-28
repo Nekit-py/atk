@@ -1,9 +1,9 @@
 from io import BytesIO
-import pandas as pd
-from typing import List, Tuple
 
-from .models import SheetContent
+import pandas as pd
+
 from .formatting import set_column_widths
+from .models import SheetContent
 
 
 def write_single_sheet(sheet_content: SheetContent) -> bytes:
@@ -29,7 +29,7 @@ def write_single_sheet(sheet_content: SheetContent) -> bytes:
         return buffer.getvalue()
 
 
-def write_multiple_sheets(contents: List[SheetContent]) -> bytes:
+def write_multiple_sheets(contents: list[SheetContent]) -> bytes:
     """Записывает несколько листов в Excel и возвращает файл в виде байтов.
 
     Аргументы:

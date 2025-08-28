@@ -4,9 +4,7 @@ from pathlib import Path
 root_dir = Path(__file__).parent.parent
 sys.path.append(str(root_dir))
 
-import atk.logger.logger
 import logging
-
 
 logger = logging.getLogger(__name__)
 

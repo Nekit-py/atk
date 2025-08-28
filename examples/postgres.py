@@ -6,6 +6,7 @@ root_dir = Path(__file__).parent.parent
 sys.path.append(str(root_dir))
 
 import asyncio
+
 from atk.db.postgres import PostgresPool
 
 

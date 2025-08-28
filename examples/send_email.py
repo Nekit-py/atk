@@ -5,9 +5,10 @@ root_dir = Path(__file__).parent.parent
 # Добавляем корневую директорию проекта в PYTHONPATH
 sys.path.append(str(root_dir))
 
-from atk.notifications.email.sender import EmailSender
-from atk.notifications.email.models import EmailMessage
 import asyncio
+
+from atk.notifications.email.models import EmailMessage
+from atk.notifications.email.sender import EmailSender
 
 
 async def main():

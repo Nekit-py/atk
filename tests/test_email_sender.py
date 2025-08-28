@@ -1,10 +1,11 @@
 """Тесты для модуля отправки email."""
 
-import pytest
 from unittest.mock import AsyncMock, patch
 
+import pytest
+
+from atk.notifications import EmailAttachment, EmailMessage
 from atk.notifications.email.sender import EmailSender
-from atk.notifications import EmailMessage, EmailAttachment
 
 
 @pytest.fixture

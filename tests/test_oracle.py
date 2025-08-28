@@ -1,10 +1,11 @@
 import os
-import pytest
-import cx_Oracle_async
-import cx_Oracle
-from unittest.mock import patch, AsyncMock, MagicMock
-from atk.db.oracle import OraclePool
 from contextlib import asynccontextmanager
+from unittest.mock import AsyncMock, patch
+
+import cx_Oracle
+import pytest
+
+from atk.db.oracle import OraclePool
 
 
 @pytest.fixture(autouse=True)

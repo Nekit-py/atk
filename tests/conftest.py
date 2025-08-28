@@ -2,9 +2,10 @@
 
 import os
 import sys
-import pytest
-from unittest.mock import patch, AsyncMock
 from contextlib import asynccontextmanager
+from unittest.mock import AsyncMock, patch
+
+import pytest
 
 # Добавляем корневую директорию проекта в PYTHONPATH
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))

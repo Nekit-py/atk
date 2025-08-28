@@ -1,6 +1,7 @@
-from openpyxl.utils.cell import get_column_letter
-import pandas as pd
 from typing import Any
+
+import pandas as pd
+from openpyxl.utils.cell import get_column_letter
 
 
 def set_column_widths(

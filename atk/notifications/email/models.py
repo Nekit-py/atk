@@ -1,8 +1,8 @@
-from dataclasses import dataclass
-from typing import Optional, Union, TypeAlias
 import re
-from pydantic import EmailStr, BaseModel, Field
+from dataclasses import dataclass
+from typing import Optional, TypeAlias, Union
 
+from pydantic import BaseModel, EmailStr, Field
 
 EmailRecipient: TypeAlias = Union[EmailStr, list[EmailStr]]
 

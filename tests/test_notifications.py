@@ -1,7 +1,7 @@
 import pytest
-from pydantic import EmailStr
-from atk.notifications import EmailMessage, EmailAttachment
 from pydantic_core import ValidationError as PydanticValidationError
+
+from atk.notifications import EmailAttachment, EmailMessage
 
 
 @pytest.fixture

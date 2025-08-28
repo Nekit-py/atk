@@ -1,9 +1,11 @@
 """Модуль для работы с базой данных PostgreSQL."""
 
-import asyncpg
-from contextlib import asynccontextmanager
 import logging
-from typing import Optional, AsyncGenerator
+from collections.abc import AsyncGenerator
+from contextlib import asynccontextmanager
+from typing import Optional
+
+import asyncpg
 
 from atk.common import get_required_env_vars
 
@@ -34,6 +36,7 @@ class PostgresPool:
             cls._instance = super().__new__(cls)
         return cls._instance
 
+    # ruff: noqa: S107
     @classmethod
     async def create_pool(
         cls,
