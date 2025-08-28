@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 from dataclasses import dataclass
 from typing import Optional
 
@@ -77,3 +77,15 @@ class Period:
             current_start = current_end
 
         return result
+
+    def as_dates(self) -> tuple[date, date]:
+        """Возвращает список дат, соответствующих периоду."""
+        return self.start.date(), self.end.date()
+
+    def as_str_dates(self) -> tuple[str, str]:
+        """Возвращает список строк, соответствующих периодам."""
+        return self.start.strftime("%d.%m.%Y"), self.end.strftime("%d.%m.%Y")
+
+    def as_datetimes(self) -> tuple[datetime, datetime]:
+        """Возвращает список дат и времени, соответствующих периоду."""
+        return self.start, self.end
