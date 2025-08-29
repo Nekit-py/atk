@@ -10,7 +10,7 @@ import asyncio
 from atk.db.postgres import PostgresPool
 
 
-async def main():
+async def main() -> None:
     # Инициализация пула соединений (параметры берутся из переменных окружения)
     await PostgresPool.create_pool(min_size=2, max_size=5)
 

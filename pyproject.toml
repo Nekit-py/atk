@@ -52,6 +52,7 @@ dev = [
     "pandas-stubs>=2.0.0",
     "types-PyYAML>=6.0.0",
     "types-requests>=2.0.0",
+    "asyncpg-stubs>=0.29.0",
 ]
 
 [project.urls]
@@ -117,6 +118,11 @@ module = [
     "openpyxl.*",
 ]
 ignore_missing_imports = true
+
+# Игнорирование specific ошибок для модулей БД
+[[tool.mypy.overrides]]
+module = ["atk.db.*"]
+disable_error_code = ["attr-defined"]
 
 # Black configuration
 [tool.black]

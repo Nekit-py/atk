@@ -27,7 +27,7 @@ class OraclePool:
     _instance: Optional["OraclePool"] = None
     _pools: dict[str, AsyncConnectionWrapper] = {}
 
-    def __new__(cls):
+    def __new__(cls) -> "OraclePool":
         """Создает единственный экземпляр класса (Singleton).
 
         Returns:
@@ -38,7 +38,7 @@ class OraclePool:
         return cls._instance
 
     @classmethod
-    async def _declare(cls):
+    async def _declare(cls) -> None:
         """Выполняет объявление блокировки в Oracle.
 
         Внутренний метод для работы с блокировками Oracle.
@@ -57,7 +57,7 @@ class OraclePool:
         user: str = "ORACLE_USER",
         password: str = "ORACLE_PASSWORD",
         host: str = "ORACLE_HOST",
-        port: int = "ORACLE_PORT",
+        port: str = "ORACLE_PORT",
         service_name: str = "ORACLE_SERVICE_NAME",
         *,
         pool_name: str = "default",

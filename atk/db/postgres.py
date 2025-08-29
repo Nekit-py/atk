@@ -26,7 +26,7 @@ class PostgresPool:
     _instance: Optional["PostgresPool"] = None
     _pools: dict[str, asyncpg.Pool] = {}
 
-    def __new__(cls):
+    def __new__(cls) -> "PostgresPool":
         """Создает единственный экземпляр класса (Singleton).
 
         Returns:
@@ -43,7 +43,7 @@ class PostgresPool:
         user: str = "POSTGRES_USER",
         password: str = "POSTGRES_PASSWORD",
         host: str = "POSTGRES_HOST",
-        port: int = "POSTGRES_PORT",
+        port: str = "POSTGRES_PORT",
         dbname: str = "POSTGRES_DBNAME",
         *,
         pool_name: str = "default",

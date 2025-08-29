@@ -49,7 +49,7 @@ def retry(
         @functools.wraps(func)
         async def async_wrapper(*args: Any, **kwargs: Any) -> Any:
             current_delay = delay
-            last_exception = None
+            last_exception: Exception | None = None
 
             for attempt in range(max_attempts):
                 try:
@@ -69,12 +69,13 @@ def retry(
                     await asyncio.sleep(current_delay)
                     current_delay *= backoff
 
-            raise last_exception
+            # Эта строка теоретически никогда не должна выполниться
+            raise last_exception or RuntimeError("Unexpected error in retry decorator")
 
         @functools.wraps(func)
         def sync_wrapper(*args: Any, **kwargs: Any) -> Any:
             current_delay = delay
-            last_exception = None
+            last_exception: Exception | None = None
 
             for attempt in range(max_attempts):
                 try:
@@ -94,7 +95,8 @@ def retry(
                     time.sleep(current_delay)
                     current_delay *= backoff
 
-            raise last_exception
+            # Эта строка теоретически никогда не должна выполниться
+            raise last_exception or RuntimeError("Unexpected error in retry decorator")
 
         return async_wrapper if asyncio.iscoroutinefunction(func) else sync_wrapper
 

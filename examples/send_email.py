@@ -11,7 +11,7 @@ from atk.notifications.email.models import EmailMessage
 from atk.notifications.email.sender import EmailSender
 
 
-async def main():
+async def main() -> None:
     sender = EmailSender()
     message = EmailMessage(
         subject="Test",
