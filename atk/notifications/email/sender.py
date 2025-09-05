@@ -1,5 +1,6 @@
 """Модуль для отправки email сообщений."""
 
+import logging
 from email import encoders
 from email.mime.base import MIMEBase
 from email.mime.multipart import MIMEMultipart
@@ -10,6 +11,8 @@ import aiosmtplib
 from atk.common import retry
 
 from .models import EmailMessage
+
+logger = logging.getLogger(__name__)
 
 
 class EmailSender:
@@ -75,10 +78,24 @@ class EmailSender:
             msg.attach(part)
 
         # Отправляем сообщение
-        async with aiosmtplib.SMTP(
-            hostname=self.hostname,
-            port=self.port,
-            start_tls=self.start_tls,
-        ) as server:
-            recipients = message.format_recipients().split(", ")
-            await server.sendmail(self.from_email, recipients, msg.as_string())
+        try:
+            async with aiosmtplib.SMTP(
+                hostname=self.hostname,
+                port=self.port,
+                start_tls=self.start_tls,
+            ) as server:
+                recipients = message.format_recipients().split(", ")
+                await server.sendmail(self.from_email, recipients, msg.as_string())
+                logger.info(
+                    "Сообщение %s с темой %s успешно отправлено",
+                    message.to,
+                    message.subject,
+                )
+        except aiosmtplib.errors.SMTPRecipientsRefused as e:
+            logger.warning("Ошибка: %s Пользователь %s не найден", e, message.to)
+        except ConnectionRefusedError as e:
+            logger.error("Ошибка! Не удалось подключиться к почтовому серверу: %s", e)
+            raise
+        except Exception as e:
+            logger.error("Неизвестная ошибка при отправке email: %s", e)
+            raise
