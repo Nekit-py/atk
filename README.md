@@ -4,8 +4,16 @@
 
 ## Установка
 
+### Через uv (рекомендуется)
+
 ```bash
-pip install git+http://10.0.2.191:8888/project/sidorovich_ns/atk.git@develop
+uv pip install git+http://10.0.2.212/services/ldap_auth.git@main
+```
+
+### Через pip (альтернатива)
+
+```bash
+pip install git+http://10.0.2.212/services/ldap_auth.git
 ```
 
 Требуется Python 3.8+
@@ -242,35 +250,36 @@ os.environ.update({
 
 ## Разработка
 
-### Установка зависимостей для разработки
+### Установка зависимостей (uv)
 
 ```bash
-pip install -r requirements-dev.txt
+uv venv
+uv sync --dev
 ```
 
 ### Запуск тестов
 
 ```bash
-pytest tests/
+uv run pytest tests/
 ```
 
 ### Форматирование кода
 
 ```bash
-black .
-isort .
+uv run black .
+uv run isort .
+```
+
+### Линтинг
+
+```bash
+uv run ruff check .
 ```
 
 ### Проверка типов
 
 ```bash
-mypy .
-```
-
-### Проверка стиля кода
-
-```bash
-flake8 .
+uv run mypy .
 ```
 
 ## Лицензия
